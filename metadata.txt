@@ -1,0 +1,21 @@
+[general]
+name=GetTiles
+qgisMinimumVersion=3.14
+description=This plugin generate tiles and add it as XYZ local layer for offline use.
+about=Create tiles from your QGIS project. Based on QMetaTiles plugin from we-do-IT Development Team.
+version=0.1
+author=R.
+email=olegaruk@yandex.ru
+
+#changelog=
+experimental=False
+deprecated=False
+tags=raster,tiles
+homepage=https://github.com/olegruk/mapmaker
+repository=https://github.com/olegruk/mapmaker
+tracker=https://github.com/olegruk/mapmaker/issues
+icon=gettiles.png
+category=Plugins
+#plugin_dependencies=
+server=False
+hasProcessingProvider=yes
