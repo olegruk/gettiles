@@ -119,6 +119,7 @@ class TileSet:
         found in tilingthread. This would be of use running the process from a script, without the GUI.
         Doesn't give any progress, useful for debugging as it doesn't use a seperate thread.
         """
+
         #  sets the writer and writes a .mapurl or leaflet file if necessary.
         self.set_writer()
         #  if selected, export the vector features and metadata associated with the tileset

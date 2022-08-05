@@ -13,7 +13,6 @@ from qgis.core import (QgsProcessingParameterExtent,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
-                       QgsLayerTreeGroup,
                        QgsLayerTreeLayer,
                        QgsRasterLayer)
 import os.path
