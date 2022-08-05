@@ -14,6 +14,7 @@ from qgis.core import (QgsProcessingParameterExtent,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsLayerTreeGroup,
+                       QgsLayerTreeLayer,
                        QgsRasterLayer)
 import os.path
 import math, re
@@ -130,19 +131,10 @@ class GetTilesProcessingAlgorithm(QgsProcessingAlgorithm):
         #create a groop for xyz layers
         root = QgsProject.instance().layerTreeRoot()
         group = root.findGroup('Local tiles')
-        if not group:
-            #group = root.addGroup('Local tiles')
-            group = QgsLayerTreeGroup("Local tiles")
-            QgsProject.instance().addMapLayer(rlayer)
-            group.addLayer(rlayer)
-            root.addChildNode(group)
-        else:
-            QgsProject.instance().addMapLayer(rlayer)
-            group.addLayer(rlayer)
-        #add new layer "rlayer" to group
-        #QgsProject.instance().addMapLayer(rlayer)
-        #QgsProject.instance().addMapLayer(rlayer, False)
-        #node_rlayer = group.addChildNode(rlayer)
+        #if not group:
+            #root.insertChildNode(0, QgsLayerTreeGroup("Local tiles"))
+        QgsProject.instance().addMapLayer(rlayer)
+        group.insertChildNode(0, QgsLayerTreeLayer(rlayer))
 
         return {self.OUTPUT: [outfolder, full_path, prj_file]}
 

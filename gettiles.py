@@ -5,7 +5,7 @@ import os.path
 import processing
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProject, QgsLayerTreeGroup, Qgis
 
 from .rectangleAreaTool import RectangleAreaTool
 from .gettiles_processing_provider import gettilesProcessingProvider
@@ -60,6 +60,36 @@ class GetTilesPlugin:
             return
         extent = '%f,%f,%f,%f'%(startX, endX, startY, endY)
         self.iface.mapCanvas().setMapTool(self.prevMapTool)
-        processing.execAlgorithmDialog('gettiles:Get tiles', {'EXTENT': extent})
+
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup('Local tiles')
+        if not group:
+            root.insertChildNode(0, QgsLayerTreeGroup("Local tiles"))
+
+        layer_list = root.checkedLayers()
+        idx = self._last_raster(layer_list)
+
+        if idx:
+            processing.execAlgorithmDialog('gettiles:Get tiles', {'EXTENT': extent, 'INPUT': idx})
+        else:
+            self.iface.messageBar().pushMessage("", "No any WMS layer in your project - nothing to cache...", level=Qgis.Warning, duration=4)
+
+        group = root.findGroup('Local tiles')
+        group.setExpanded(True)
+        group.setItemVisibilityChecked(True)
+
         self.iface.mapCanvas().refresh()
         self.iface.mapCanvas().redrawAllLayers()
+
+    def _last_raster (self, checked_list):
+        rasters = []
+        for lay in checked_list:
+            if lay.dataProvider().name() == 'wms':
+            #if lay.type() == QgsMapLayerType.RasterLayer:
+                rasters.append(lay)
+        if len(rasters) > 0:
+            #idx = checked_list.index(rasters[0])
+            idx = rasters[0]
+        else:
+            idx = None
+        return idx
