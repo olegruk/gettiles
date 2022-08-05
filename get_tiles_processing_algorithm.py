@@ -32,8 +32,6 @@ class GetTilesProcessingAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config=None):
-
-        prj_dir = QgsProject.instance().homePath()
         self.zoomlist = ['z0', 'z1', 'z2', 'z3', 'z4', 'z5', 'z6', 'z7', 'z8', 'z9', 'z10', 'z11', 'z12', 'z13', 'z14', 'z15', 'z16', 'z17', 'z18', 'z19', 'z20', 'z21', 'z22', 'z23', 'z24']
         self.addParameter(QgsProcessingParameterEnum(self.MINZOOM, 'Min zoom of cached map', self.zoomlist, defaultValue=13))
         self.addParameter(QgsProcessingParameterEnum(self.MAXZOOM, 'Max zoom of cached map', self.zoomlist, defaultValue=15))
@@ -41,7 +39,7 @@ class GetTilesProcessingAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.SINGLELAYER, 'Cache single raster layer.', defaultValue=True, optional=False))
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, 'Cached layer:', optional=True))
         self.addParameter(QgsProcessingParameterString(self.SUBSET, 'Cache folder name', optional=False, defaultValue='Cache'))
-        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT, 'Folder to store map tiles (by default - home folder of you project):', defaultValue=prj_dir))
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT, 'Folder to store map tiles (by default - home folder of you project):'))
         self.workThread = None
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -131,8 +129,6 @@ class GetTilesProcessingAlgorithm(QgsProcessingAlgorithm):
         #create a groop for xyz layers
         root = QgsProject.instance().layerTreeRoot()
         group = root.findGroup('Local tiles')
-        #if not group:
-            #root.insertChildNode(0, QgsLayerTreeGroup("Local tiles"))
         QgsProject.instance().addMapLayer(rlayer)
         group.insertChildNode(0, QgsLayerTreeLayer(rlayer))
 

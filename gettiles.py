@@ -62,21 +62,22 @@ class GetTilesPlugin:
         self.iface.mapCanvas().setMapTool(self.prevMapTool)
 
         root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup('Local tiles')
-        if not group:
-            root.insertChildNode(0, QgsLayerTreeGroup("Local tiles"))
-
         layer_list = root.checkedLayers()
         idx = self._last_raster(layer_list)
-
         if idx:
-            processing.execAlgorithmDialog('gettiles:Get tiles', {'EXTENT': extent, 'INPUT': idx})
+            group = root.findGroup('Local tiles')
+            if not group:
+                root.insertChildNode(0, QgsLayerTreeGroup("Local tiles"))
+            prj_dir = QgsProject.instance().homePath()
+
+            processing.execAlgorithmDialog('gettiles:Get tiles', {'EXTENT': extent, 'INPUT': idx, 'OUTPUT': prj_dir})
+
+            group = root.findGroup('Local tiles')
+            group.setExpanded(True)
+            group.setItemVisibilityChecked(True)
+
         else:
             self.iface.messageBar().pushMessage("", "No any WMS layer in your project - nothing to cache...", level=Qgis.Warning, duration=4)
-
-        group = root.findGroup('Local tiles')
-        group.setExpanded(True)
-        group.setItemVisibilityChecked(True)
 
         self.iface.mapCanvas().refresh()
         self.iface.mapCanvas().redrawAllLayers()
